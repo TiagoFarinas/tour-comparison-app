@@ -1,32 +1,48 @@
-//Task 1 - App.jsx (Root Component)
+//Task 1 - 
 import React, { useState, useEffect } from 'react';
 import Gallery from './Gallery';
-const App = () => {
+import './App.css';
+
+function App() {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  useEffect(() => { // Fetch tour data on mount
+
+  // Fetch data from API when the component mounts
+  useEffect(() => {
     const fetchTours = async () => {
       try {
         const response = await fetch('https://course-api.com/react-tours-project');
         if (!response.ok) {
-          throw new Error('Failed to fetch tours')};
+          throw new Error('Failed to fetch tours');
+        }
         const data = await response.json();
         setTours(data);
         setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false)}};
-    fetchTours()},[]);
-  const removeTour = (id) => {  // Remove tour by ID
-    setTours(tours.filter((tour) => tour.id !== id))};
-  if (loading) {
-    return <h2>Loading...</h2>};
-  if (error) {
-    return <h2>Error: {error}</h2>};
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, []);
+
+  // Remove a tour when user clicks "Not Interested"
+  const removeTour = (id) => {
+    setTours(tours.filter(tour => tour.id !== id));
+  };
+
+  // Loading or error state
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <div>
-      <h1>Tour Comparison App</h1>
+    <div className="app">
+      <h1>Tour Comparison</h1>
       <Gallery tours={tours} removeTour={removeTour} />
-    </div>)};
+    </div>
+  );
+}
+
 export default App;

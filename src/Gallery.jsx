@@ -1,27 +1,36 @@
 //Task 2 - Gallery.jsx (Tour List Component)
 import React, { useState } from 'react';
-const Gallery = ({ tours, removeTour }) => {
+
+function Gallery({ tours, removeTour }) {
+  const [toggledTours, setToggledTours] = useState({});
+
+  const toggleDescription = (id) => {
+    setToggledTours({
+      ...toggledTours,
+      [id]: !toggledTours[id],
+    });
+  };
+
   return (
     <div className="gallery">
       {tours.map((tour) => (
-        <TourCard key={tour.id} tour={tour} removeTour={removeTour} />
-      ))}
-    </div>)};
-const TourCard = ({ tour, removeTour }) => {
-  const [showMore, setShowMore] = useState(false);
-  return (
-    <div className="tour-card">
-      <img src={tour.image} alt={tour.name} />
-      <div className="tour-details">
-        <h2>{tour.name}</h2>
-        <h4>${tour.price}</h4>
-        <p>
-          {showMore ? tour.info : `${tour.info.substring(0, 100)}...`}
-          <button onClick={() => setShowMore(!showMore)}>
-            {showMore ? 'Show Less' : 'Read More'}
+        <div className="tour" key={tour.id}>
+          <img src={tour.image} alt={tour.name} />
+          <h3>{tour.name}</h3>
+          <p>{tour.price}</p>
+          <p>
+            {toggledTours[tour.id]
+              ? tour.description
+              : `${tour.description.substring(0, 100)}...`}
+          </p>
+          <button onClick={() => removeTour(tour.id)}>Not Interested</button>
+          <button onClick={() => toggleDescription(tour.id)}>
+            {toggledTours[tour.id] ? 'Show Less' : 'Read More'}
           </button>
-        </p>
-        <button onClick={() => removeTour(tour.id)}>Not Interested</button>
-      </div>
-    </div>)};
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default Gallery;
