@@ -6,13 +6,13 @@ import './App.css';
 function App() {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
-  // Fetch data from API when the component mounts
   useEffect(() => {
+    // Fetch data from API
     const fetchTours = async () => {
       try {
-        const response = await fetch('https://course-api.com/react-tours-project');
+        const response = await fetch('https://www.course-api.com/react-tours-project');
         if (!response.ok) {
           throw new Error('Failed to fetch tours');
         }
@@ -28,19 +28,18 @@ function App() {
     fetchTours();
   }, []);
 
-  // Remove a tour when user clicks "Not Interested"
-  const removeTour = (id) => {
-    setTours(tours.filter(tour => tour.id !== id));
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  // Loading or error state
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="app">
-      <h1>Tour Comparison</h1>
-      <Gallery tours={tours} removeTour={removeTour} />
+      <h1>Our Tours</h1>
+      <Gallery tours={tours} setTours={setTours} />
     </div>
   );
 }
