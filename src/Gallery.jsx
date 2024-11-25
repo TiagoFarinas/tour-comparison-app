@@ -1,36 +1,50 @@
-//Task 2 - Gallery.jsx (Tour List Component)
-import React, { useState } from 'react';
+//task 2
+import React, { useState, useEffect } from "react";
+import './Gallery.css';
 
-function Gallery({ tours, removeTour }) {
-  const [toggledTours, setToggledTours] = useState({});
+const Gallery = () => { // display data
+    const [tours, settours] = useState([]); //store data
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null); 
 
-  const toggleDescription = (id) => {
-    setToggledTours({
-      ...toggledTours,
-      [id]: !toggledTours[id],
-    });
-  };
-
-  return (
-    <div className="gallery">
-      {tours.map((tour) => (
-        <div className="tour" key={tour.id}>
-          <img src={tour.image} alt={tour.name} />
-          <h3>{tour.name}</h3>
-          <p>{tour.price}</p>
-          <p>
-            {toggledTours[tour.id]
-              ? tour.description
-              : `${tour.description.substring(0, 100)}...`}
-          </p>
-          <button onClick={() => removeTour(tour.id)}>Not Interested</button>
-          <button onClick={() => toggleDescription(tour.id)}>
-            {toggledTours[tour.id] ? 'Show Less' : 'Read More'}
-          </button>
+    useEffect(() => {
+        const fetchTours = async () => {//fetch data
+            try {
+                const response = await fetch("https://www.course-api.com/react-tours-project"); // call API 
+                if (!response.ok) {
+                    throw new Error('Error: fetch failed'); //display error message if fetch fails
+                }
+                const data = await response.json();
+                // data fetched into state
+                settours(data); 
+                //loading to false after fetching data
+                setLoading(false); 
+            } catch (error) {
+                //error message if fetch fails
+                setError(error.message); 
+                //loading to false to stop
+                setLoading(false); 
+            }
+    }
+        fetchTours();//call fetch function 
+    },[]); //empty array so it run
+    const removeTour = (id) => {
+        settours(tours.filter((tour) => tour.id !== id)); //remove tour 
+    };
+    if (loading) return <p>Loading...</p> // render loading
+    if (error) return <p>Error: {error}</p> // render error
+    return (
+        <div className="gallery-container">
+            {tours.map((tour) => (
+                <div key={tour.id} className="tour-container">
+                    <img src={tour.image} alt={tour.name} className="tour-img" />
+                    <h2>{tour.name}</h2>
+                    <p>${tour.price}</p>
+                    <p>{tour.description}</p>
+                    <button onClick={() => removeTour(tour.id)}>Not Interessed</button>
+                </div>
+            ))}
         </div>
-      ))}
-    </div>
-  );
-}
-
-export default Gallery;
+    ); 
+};
+export default Gallery; 
