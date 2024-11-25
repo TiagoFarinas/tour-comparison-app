@@ -1,6 +1,6 @@
 //task 2
 import React, { useState, useEffect } from "react";
-import './Gallery.css';
+import "../style/Galery.css";
 
 const Gallery = () => { // display data
     const [tours, settours] = useState([]); //store data

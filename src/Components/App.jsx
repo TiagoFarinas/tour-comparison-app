@@ -10,5 +10,5 @@ const App = () => {
     </div>
   );
 };
-//export app to render in the main file
+//export app to render in  main file
 export default App; 
